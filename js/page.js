@@ -1,3 +1,16 @@
+function getParameter(theParameter) {
+  "use strict";
+  var params = window.location.search.substr(1).split('&');
+
+  for (var i = 0; i < params.length; i++) {
+    var p=params[i].split('=');
+    if (p[0] == theParameter) {
+      return decodeURIComponent(p[1]);
+    }
+  }
+  return false;
+}
+
 function samplesToTimeouts(samples) {
   "use strict";
   var timeouts = samples.slice();
@@ -12,6 +25,24 @@ function getAverageTimeout(samples, numberOfSamples) {
   "use strict";
   var timeouts = samplesToTimeouts(samples.slice(samples.length - numberOfSamples));
   return timeouts.reduce(function(a, b) { return a + b; }) / timeouts.length;
+}
+
+function onLoad() {
+  var url = getParameter("url");
+  var nsamples = getParameter("nsamples");
+  var timeout = getParameter("timeout");
+
+  if (url) {
+    $("#url").val(url);
+  }
+
+  if (nsamples) {
+    $("#nsamples").val(nsamples);
+  }
+
+  if (timeout) {
+    $("#timeout").val(timeout);
+  }
 }
 
 function getDelaySamples() {
@@ -53,6 +84,18 @@ function getDelaySamples() {
         yax_format: function(v){return v + "ms";},
         markers: [{"x": marker, "label": samples[marker].toFixed(2) + "ms"}],
       });
+
+      var link = document.getElementById("link");
+
+      link.href = window.location.hostname
+                  + "?url="
+                  + $("#url").val()
+                  + "&nsamples="
+                  + N_SAMPLES
+                  + "&timeout="
+                  + TIMEOUT_VALUE;
+
+      link.innerText = link.href;
     } else {
       setTimeout(callback, TIMEOUT_VALUE);
     }

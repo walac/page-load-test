@@ -13,7 +13,7 @@
   <script src="js/page.js"></script>
   <title>Page load test</title>
 </head>
-<body>
+<body onload="onLoad();">
   <datalist id="urls">
     <option value="http://www.facebook.com">
     <option value="http://www.twitter.com">
@@ -31,13 +31,18 @@
           <input onkeydown="if (event.keyCode == 13) {getDelaySamples(); return false;}" type="url" name="url" id="url" list="urls" size="40%">
           <button onclick="getDelaySamples();">Test</button><br/>
           <label for="nsamples">Number of samples:</label>
-          <input type="number" id="nsamples" min="1" value="20" required></input><br/>
+          <input type="number" name="nsamples" id="nsamples" min="1" value="20" required></input><br/>
           <label for="timeout">Timeout value:</label>
-          <input type="number" id="timeout" min="1" value="5" required></input><br/>
+          <input type="number" name="timeout" id="timeout" min="1" value="5" required></input><br/>
       </div>
     </div>
     <div class"row">
       <div id="plot" class="col-md-12"></div>
+    </div>
+    <div class="row">
+      <div class"col-md-12">
+        <a id="link" hef=""></a>
+      </div>
     </div>
   </div>
 </body>
