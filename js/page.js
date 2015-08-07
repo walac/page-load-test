@@ -16,8 +16,8 @@ function getAverageTimeout(samples, numberOfSamples) {
 
 function getDelaySamples() {
   "use strict";
-  var N_SAMPLES = 20;
-  var TIMEOUT_VALUE = 5;
+  var N_SAMPLES = parseInt($("#nsamples").val());
+  var TIMEOUT_VALUE = parseInt($("#timeout").val());
   var MAXIMUM_TIMEOUT = TIMEOUT_VALUE * 1.1;
   var samples = [];
 
