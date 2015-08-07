@@ -41,8 +41,8 @@ function getDelaySamples() {
       MG.data_graphic({
         title: "Page load timings",
         data: data,
-        width: 750,
-        height: 150,
+        width: 1000,
+        height: 600,
         target: "#plot",
         min_x: 0,
         max_x: samples.length * 1.2,
@@ -50,6 +50,7 @@ function getDelaySamples() {
         max_y: Math.max.apply(null, timeouts) * 1.2,
         x_accessor: "x",
         y_accessor: "timeout",
+        yax_format: function(v){return v + "ms";},
         markers: [{"x": marker, "label": samples[marker].toFixed(2) + "ms"}],
       });
     } else {
