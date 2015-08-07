@@ -4,6 +4,7 @@ label{
   clear: left;
   width: 250px;
   text-align: right;
+  margin: 10px;
 }
 input {
   display: inline-block;

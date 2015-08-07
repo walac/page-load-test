@@ -31,6 +31,7 @@ function onLoad() {
   var url = getParameter("url");
   var nsamples = getParameter("nsamples");
   var timeout = getParameter("timeout");
+  var tolerance = getParameter("tolerance");
 
   if (url) {
     $("#url").val(url);
@@ -43,13 +44,19 @@ function onLoad() {
   if (timeout) {
     $("#timeout").val(timeout);
   }
+
+  if (tolerance) {
+    $("#rtol").val(tolerance);
+    $("#itol").val(tolerance);
+  }
 }
 
 function getDelaySamples() {
   "use strict";
   var N_SAMPLES = parseInt($("#nsamples").val());
   var TIMEOUT_VALUE = parseInt($("#timeout").val());
-  var MAXIMUM_TIMEOUT = TIMEOUT_VALUE * 1.1;
+  var TOLERANCE = parseInt($("#itol").val());
+  var MAXIMUM_TIMEOUT = TIMEOUT_VALUE * (1 + TOLERANCE/100);
   var samples = [];
 
   var startPoint = performance.now();
@@ -93,7 +100,9 @@ function getDelaySamples() {
                   + "&nsamples="
                   + N_SAMPLES
                   + "&timeout="
-                  + TIMEOUT_VALUE;
+                  + TIMEOUT_VALUE
+                  + "&tolerance="
+                  + TOLERANCE;
 
       link.innerText = link.href;
     } else {

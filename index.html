@@ -31,9 +31,12 @@
           <input onkeydown="if (event.keyCode == 13) {getDelaySamples(); return false;}" type="url" name="url" id="url" list="urls" size="40%">
           <button onclick="getDelaySamples();">Test</button><br/>
           <label for="nsamples">Number of samples:</label>
-          <input type="number" name="nsamples" id="nsamples" min="1" value="20" required></input><br/>
+          <input type="number" name="nsamples" id="nsamples" min="1" value="20" required/><br/>
           <label for="timeout">Timeout value:</label>
-          <input type="number" name="timeout" id="timeout" min="1" value="5" required></input><br/>
+          <input type="number" name="timeout" id="timeout" min="1" value="5" required/><br/>
+          <label for="tolerance">Tolerance:</label>
+          <input type="numeric" value="10" id="itol" readonly/>
+          <input type="range" id="rtol" name="tolerance" min="0" max="100" value="10" onchange="$('#itol').val(this.value)"/><br/>
       </div>
     </div>
     <div class"row">
