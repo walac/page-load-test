@@ -10,8 +10,19 @@
   <script src="js/page.js"></script>
   <title>Page load test</title>
 </head>
-<body onload="getDelaySamples()">
+<body>
+  <div>
+    <datalist id="urls">
+      <option value="http://www.facebook.com">
+      <option value="http://www.twitter.com">
+      <option value="http://www.nytimes.com/">
+      <option value="http://www.mozilla.org">
+      <option value="http://www.yahoo.com">
+    </datalist> 
+    <label for="url">URL</label>
+    <input onkeydown="if (event.keyCode == 13) {getDelaySamples(); return false;}" type="url" name="url" id="url" list="urls">
+    <button onclick="getDelaySamples();">Test</button>
+  </div>
   <div id="plot"></div>
-  <div><iframe id="myframe" src="frame.html"></iframe></div>
 </body>
 </html>

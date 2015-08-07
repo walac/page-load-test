@@ -1,61 +1,61 @@
-function frameLoad() {
-  "use strict";
-  var SAMPLES_LENGTH = 20;
-  var TIMEOUT_VALUE = 5;
-  var MAXIMUM_TIMEOUT = TIMEOUT_VALUE * 1.1;
-  var stamps = [];
-  
-  function callback() {
-    stamps.push(performance.now());
-
-    if (stamps.length >= SAMPLES_LENGTH) {
-      var timeouts = stamps.slice(stamps.length - SAMPLES_LENGTH);
-
-      for (var i = 1; i < timeouts.length; ++i) {
-        timeouts[i-1] = timeouts[i] - timeouts[i-1];
-      }
-
-      timeouts.pop();
-
-      var averageTimeout = timeouts.reduce(function(a, b) { return a + b; }) / SAMPLES_LENGTH;
-      if (averageTimeout <= MAXIMUM_TIMEOUT) {
-        window.top.postMessage(stamps[0], '*');
-        return;
-      }
-    }
-
-    setTimeout(callback, TIMEOUT_VALUE);
+function samplesToTimeouts(samples) {
+  var timeouts = samples.slice();
+  for (var i = 1; i < timeouts.length; ++i) {
+    timeouts[i-1] = timeouts[i] - timeouts[i-1];
   }
+  timeouts.pop();
+  return timeouts;
+}
 
-  setTimeout(callback, TIMEOUT_VALUE);
+function getAverageTimeout(samples, numberOfSamples) {
+  "use strict";
+  var timeouts = samplesToTimeouts(samples.slice(samples.length - numberOfSamples));
+  return timeouts.reduce(function(a, b) { return a + b; }) / timeouts.length;
 }
 
 function getDelaySamples() {
   "use strict";
+
   var N_SAMPLES = 20;
-
-  var count = N_SAMPLES;
+  var TIMEOUT_VALUE = 5;
+  var MAXIMUM_TIMEOUT = TIMEOUT_VALUE * 1.1;
   var samples = [];
-  var frame = document.getElementById("myframe");
 
-  window.onmessage = function(e) {
-    samples.push({"loadTime": parseInt(e.data), "x": N_SAMPLES - count});
-    if (--count) {
-      frame.src += ''; // reload the frame
-    } else {
+  samples.push(performance.now());
+
+  var callback = function() {
+    samples.push(performance.now());
+    if (samples.length >= N_SAMPLES && getAverageTimeout(samples, N_SAMPLES) <= MAXIMUM_TIMEOUT) {
+      var marker = samples.length - N_SAMPLES;
+      var timeouts = samplesToTimeouts(samples);
+      var data = [];
+
+      ref.close();
+      samples = samples.slice(1);
+
+      for (var i = 0; i < samples.length; ++i) {
+        data.push({"x": i, "timeout": timeouts[i]});
+      }
+
       MG.data_graphic({
         title: "Page load timings",
-        data: samples,
+        data: data,
         width: 750,
         height: 150,
         target: "#plot",
         min_x: 0,
-        max_x: N_SAMPLES,
+        max_x: samples.length * 1.2,
         min_y: 0,
-        max_y: Math.max.apply(null, samples.map(function(el) { return el.loadTime; })) * 1.1,
+        max_y: Math.max.apply(null, timeouts) * 1.2,
         x_accessor: "x",
-        y_accessor: "loadTime"
+        y_accessor: "timeout",
+        markers: [{"x": marker, "label": (samples[marker]/1000).toFixed(2) + "ms"}],
       });
+    } else {
+      setTimeout(callback, TIMEOUT_VALUE);
     }
   }
+
+  var ref = window.open(document.getElementById("url").value);
+  setTimeout(callback, TIMEOUT_VALUE);
 }
