@@ -35,7 +35,7 @@ function getDelaySamples() {
       samples = samples.slice(1);
 
       for (var i = 0; i < samples.length; ++i) {
-        data.push({"x": i, "timeout": timeouts[i]});
+        data.push({"x": i, "timeout": Math.abs(timeouts[i] - TIMEOUT_VALUE)});
       }
 
       MG.data_graphic({
