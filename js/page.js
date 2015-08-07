@@ -21,10 +21,11 @@ function getDelaySamples() {
   var MAXIMUM_TIMEOUT = TIMEOUT_VALUE * 1.1;
   var samples = [];
 
-  samples.push(performance.now());
+  var startPoint = performance.now();
+  samples.push(0);
 
   var callback = function() {
-    samples.push(performance.now());
+    samples.push(performance.now() - startPoint);
     if (samples.length >= N_SAMPLES && getAverageTimeout(samples, N_SAMPLES) <= MAXIMUM_TIMEOUT) {
       var marker = samples.length - N_SAMPLES;
       var timeouts = samplesToTimeouts(samples);
@@ -49,7 +50,7 @@ function getDelaySamples() {
         max_y: Math.max.apply(null, timeouts) * 1.2,
         x_accessor: "x",
         y_accessor: "timeout",
-        markers: [{"x": marker, "label": (samples[marker]/1000).toFixed(2) + "ms"}],
+        markers: [{"x": marker, "label": samples[marker].toFixed(2) + "ms"}],
       });
     } else {
       setTimeout(callback, TIMEOUT_VALUE);
