@@ -1,4 +1,5 @@
 function samplesToTimeouts(samples) {
+  "use strict";
   var timeouts = samples.slice();
   for (var i = 1; i < timeouts.length; ++i) {
     timeouts[i-1] = timeouts[i] - timeouts[i-1];
@@ -15,7 +16,6 @@ function getAverageTimeout(samples, numberOfSamples) {
 
 function getDelaySamples() {
   "use strict";
-
   var N_SAMPLES = 20;
   var TIMEOUT_VALUE = 5;
   var MAXIMUM_TIMEOUT = TIMEOUT_VALUE * 1.1;
