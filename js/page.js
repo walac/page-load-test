@@ -12,7 +12,8 @@ function getParameter(theParameter) {
 }
 
 function getCompleteUrl() {
-  return window.location.hostname
+  var loc = window.location;
+  return loc.protocol + "//" + loc.hostname + loc.pathname
           + "?url="
           + $("#url").val()
           + "&nsamples="
