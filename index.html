@@ -28,8 +28,8 @@
     <div class="row">
       <div class="col-md-12">
           <label for="url">URL:</label>
-          <input onkeydown="if (event.keyCode == 13) {getDelaySamples(); return false;}" type="url" name="url" id="url" list="urls" size="40%">
-          <button onclick="getDelaySamples();">Test</button><br/>
+          <input onkeydown="if (event.keyCode == 13) {onClick(); return false;}" type="url" name="url" id="url" list="urls" size="40%">
+          <button onclick="onClick();">Test</button><br/>
           <label for="nsamples">Number of samples:</label>
           <input type="number" name="nsamples" id="nsamples" min="1" value="20" required/><br/>
           <label for="timeout">Timeout value:</label>

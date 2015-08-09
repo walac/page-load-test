@@ -11,6 +11,18 @@ function getParameter(theParameter) {
   return false;
 }
 
+function getCompleteUrl() {
+  return window.location.hostname
+          + "?url="
+          + $("#url").val()
+          + "&nsamples="
+          + $("#nsamples").val()
+          + "&timeout="
+          + $("#timeout").val()
+          + "&tolerance="
+          + $("#itol").val();
+}
+
 function samplesToTimeouts(samples) {
   "use strict";
   var timeouts = samples.slice();
@@ -27,11 +39,16 @@ function getAverageTimeout(samples, numberOfSamples) {
   return timeouts.reduce(function(a, b) { return a + b; }) / timeouts.length;
 }
 
+function onClick() {
+  window.open(getCompleteUrl() + "&run=1");
+}
+
 function onLoad() {
   var url = getParameter("url");
   var nsamples = getParameter("nsamples");
   var timeout = getParameter("timeout");
   var tolerance = getParameter("tolerance");
+  var run = getParameter("run");
 
   if (url) {
     $("#url").val(url);
@@ -48,6 +65,10 @@ function onLoad() {
   if (tolerance) {
     $("#rtol").val(tolerance);
     $("#itol").val(tolerance);
+  }
+
+  if (run) {
+    getDelaySamples();
   }
 }
 
@@ -69,7 +90,7 @@ function getDelaySamples() {
       var timeouts = samplesToTimeouts(samples);
       var data = [];
 
-      ref.close();
+      window.opener.close();
       samples = samples.slice(1);
 
       for (var i = 0; i < samples.length; ++i) {
@@ -94,15 +115,7 @@ function getDelaySamples() {
 
       var link = document.getElementById("link");
 
-      link.href = window.location.hostname
-                  + "?url="
-                  + $("#url").val()
-                  + "&nsamples="
-                  + N_SAMPLES
-                  + "&timeout="
-                  + TIMEOUT_VALUE
-                  + "&tolerance="
-                  + TOLERANCE;
+      link.href = getCompleteUrl();
 
       link.innerText = link.href;
     } else {
@@ -110,6 +123,6 @@ function getDelaySamples() {
     }
   }
 
-  var ref = window.open(document.getElementById("url").value);
+  window.opener.location.href = $("#url").val();
   setTimeout(callback, TIMEOUT_VALUE);
 }
