@@ -107,7 +107,7 @@ function getDelaySamples() {
       samples = samples.slice(1);
 
       for (var i = 0; i < samples.length; ++i) {
-        data.push({"x": i, "timeout": Math.abs(timeouts[i] - TIMEOUT_VALUE)});
+        data.push({"x": i, "timeout": (timeouts[i] - TIMEOUT_VALUE)});
       }
 
       MG.data_graphic({
@@ -118,7 +118,6 @@ function getDelaySamples() {
         target: "#plot",
         min_x: 0,
         max_x: samples.length * 1.2,
-        min_y: 0,
         max_y: Math.max.apply(null, timeouts) * 1.2,
         x_accessor: "x",
         y_accessor: "timeout",
