@@ -41,7 +41,12 @@ function getAverageTimeout(samples, numberOfSamples) {
 }
 
 function onClick() {
-  window.open(getCompleteUrl() + "&run=1");
+  if ($('input[name="open-method"]:checked').val() == "window") {
+    window.open(getCompleteUrl() + "&run=1");
+  } else {
+    $("#content-frame").attr('src', $("#url").val());
+    getDelaySamples();
+  }
 }
 
 function onLoad() {
@@ -69,6 +74,7 @@ function onLoad() {
   }
 
   if (run) {
+    window.opener.location.href = $("#url").val();
     getDelaySamples();
   }
 }
@@ -81,6 +87,9 @@ function getDelaySamples() {
   var MAXIMUM_TIMEOUT = TIMEOUT_VALUE * (1 + TOLERANCE/100);
   var samples = [];
 
+  $("#plot").html("");
+  $("#link").html("");
+
   var startPoint = performance.now();
   samples.push(0);
 
@@ -91,7 +100,10 @@ function getDelaySamples() {
       var timeouts = samplesToTimeouts(samples);
       var data = [];
 
-      window.opener.close();
+      if (window.opener && getParameter("run")) {
+        window.opener.close();
+      }
+
       samples = samples.slice(1);
 
       for (var i = 0; i < samples.length; ++i) {
@@ -124,6 +136,5 @@ function getDelaySamples() {
     }
   }
 
-  window.opener.location.href = $("#url").val();
   setTimeout(callback, TIMEOUT_VALUE);
 }

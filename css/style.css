@@ -1,4 +1,4 @@
-label{
+label {
   display: inline-block;
   float: left;
   clear: left;
@@ -6,7 +6,18 @@ label{
   text-align: right;
   margin: 10px;
 }
+
 input {
   display: inline-block;
   float: left;
+}
+
+#rtol {
+  width: 400px;
+}
+
+.content-frame {
+  width: 90%;
+  height: 300px;
+  border: none;
 }
