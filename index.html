@@ -6,6 +6,7 @@
   <link rel="stylesheet" type="text/css" href="css/metricsgraphics.css">
   <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
+  <link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
   <script src="js/jquery-2.1.4.min.js"></script>
   <script src="js/d3.min.js"></script>
   <script src="js/metricsgraphics.min.js"></script>
@@ -15,9 +16,11 @@
 </head>
 <body onload="onLoad();">
   <datalist id="urls">
+    <option value="http://www.uol.com.br">
+    <option value="http://www.ig.com.br">
     <option value="http://www.facebook.com">
     <option value="http://www.twitter.com">
-    <option value="http://www.nytimes.com/">
+    <option value="http://www.nytimes.com">
     <option value="http://www.mozilla.org">
     <option value="http://www.yahoo.com">
   </datalist> 
@@ -28,15 +31,13 @@
     <div class="row">
       <div class="col-md-12">
         <label for="url">URL:</label>
-        <input onkeydown="if (event.keyCode == 13) {onClick(); return false;}" type="url" name="url" id="url" list="urls" size="40%">
+        <input onkeydown="if (event.keyCode == 13) {onClick(); return false;}" type="url" name="url" id="url" title="The target website" list="urls" size="40%">
         <button onclick="onClick();">Test</button><br/>
-        <label for="nsamples">Number of samples:</label>
-        <input type="number" name="nsamples" id="nsamples" min="1" value="20" required/><br/>
-        <label for="timeout">Timeout value:</label>
-        <input type="number" name="timeout" id="timeout" min="1" value="5" required/><br/>
-        <label for="tolerance">Tolerance:</label>
-        <input type="numeric" value="10" id="itol" readonly/>
-        <input type="range" id="rtol" name="tolerance" min="0" max="100" value="10" onchange="$('#itol').val(this.value)"/><br/>
+        <label for="timeout">Timeout value (ms):</label>
+        <input type="number" name="timeout" id="timeout" min="1" value="5" title="The timeout value for sampling" required/><br/>
+        <label for="tolerance">Tolerance (%):</label>
+        <input type="numeric" value="10" id="itol" title="Timeout tolerance (%)" onchange="$('#rtol').val(this.value)"/>
+        <input type="range" id="rtol" name="tolerance" min="0" max="100" value="10" title="Timeout tolerance (%)" onchange="$('#itol').val(this.value)"/><br/>
       </div>
     </div>
     <div class=row>
@@ -44,19 +45,14 @@
         <label for="opening">Opening method:</label>
       </div>
       <div class="col-md-4">
-        <input type="radio" name="open-method" id="new-window" value="window" checked>New Window
+        <input type="radio" name="open-method" id="new-window" value="window">New Window
       </div>
       <div class="col-md-4">
-        <input type="radio" name="open-method" id="frame" value="frame">Frame<br/>
+        <input type="radio" name="open-method" id="frame" value="frame" checked>Frame<br/>
       </div>
     </div>
     <div class"row">
       <div id="plot" class="col-md-12"></div>
-    </div>
-    <div class="row">
-      <div class"col-md-12">
-        <a id="link" hef=""></a>
-      </div>
     </div>
     <div class="row">
       <div class="col-md-12">
