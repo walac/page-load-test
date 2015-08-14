@@ -63,12 +63,45 @@ function average(myData) {
   return myData.reduce(function(a, b) { return a + b; }) / myData.length;
 }
 
+function movingAverage(values, windowSize) {
+  var side = Math.floor(windowSize/2);
+  var newValues = values.slice();
+  var i;
+  var j;
+  var s;
+
+  for (i = 1; i <= side; ++i) {
+    s = 0;
+
+    for(j = i-1; j >= 0; --j) {
+      s += newValues[j] + newValues[i+j+1];
+    }
+
+    newValues[i] = (s + newValues[i]) / (2 * i + 1);
+  }
+
+  for (i = side+1; i < newValues.length; ++i) {
+    newValues[i] = newValues[i-1] + (newValues[Math.min(i+side, newValues.length-1)] - newValues[i-side-1]) / windowSize;
+  }
+
+  return newValues;
+}
+
 function findPageLoadedPoint(samples) {
+  "use strict";
+
   var timeouts = samplesToTimeouts(samples);
-  var avg = average(timeouts);
-  var filtered = timeouts.map(function(v) {return v >= avg ? v : 0;});
+  var avg = average(timeouts) * 1.5;
+  var filtered = movingAverage(timeouts, 23).map(function(v) {return v >= avg;});
   filtered.reverse();
-  return filtered.length - 1 - filtered.findIndex(function(val) {return val != 0;});
+
+  var mark = filtered.length - 1 - filtered.findIndex(function(val) {return val;});
+
+  if (mark >= filtered.length) {
+    mark = filtered.length - 1;
+  }
+
+  return mark;
 }
 
 function getAverageTimeout(samples, numberOfSamples) {
@@ -77,9 +110,8 @@ function getAverageTimeout(samples, numberOfSamples) {
   return average(timeouts);
 }
 
-function processSamples(timeoutValue, samples) {
+function samplesToData(samples, timeoutValue) {
   var data = [];
-
   for (var i = 1; i < samples.length; ++i) {
     var jankFactor = Math.abs(samples[i] - samples[i-1] - timeoutValue) / timeoutValue;
     var responsiveness = (1 / (1 + jankFactor)) * 100;
@@ -88,11 +120,16 @@ function processSamples(timeoutValue, samples) {
       "y": responsiveness
     });
   }
+  return data;
+}
 
-  var marker = findPageLoadedPoint(samples);
+function processSamples(timeoutValue, samples) {
+
+  var mark  = findPageLoadedPoint(samples);
+  var data = samplesToData(samples, timeoutValue);
 
   MG.data_graphic({
-    title: "Page load timings",
+    title: "Page load responsiness",
     data: data,
     width: 1000,
     height: 600,
@@ -107,7 +144,7 @@ function processSamples(timeoutValue, samples) {
     x_label: "Time (ms)",
     y_label: "Responsiveness (%)",
     interpolate: "linear",
-    markers: [{"x": data[marker].x, "label": parseInt(data[marker].x) + "ms"}]
+    markers: [{"x": data[mark].x, "label": parseInt(data[mark].x) + "ms"}]
   });
 }
 
@@ -119,8 +156,7 @@ function getSamples(numberOfLastAvgSamples, timeoutValue, tolerance, callback) {
 
   function timeoutCallback() {
     samples.push(performance.now() - startPoint);
-    if (samples.length > numberOfLastAvgSamples
-        && getAverageTimeout(samples, numberOfLastAvgSamples+1) <= maximumTimeout) {
+    if (samples[samples.length-1] >= 3000) {
       callback(samples);
     } else {
       setTimeout(timeoutCallback, timeoutValue);
