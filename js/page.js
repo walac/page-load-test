@@ -156,7 +156,7 @@ function getSamples(numberOfLastAvgSamples, timeoutValue, tolerance, callback) {
 
   function timeoutCallback() {
     samples.push(performance.now() - startPoint);
-    if (samples[samples.length-1] >= 3000) {
+    if (samples[samples.length-1] >= 5000) {
       callback(samples);
     } else {
       setTimeout(timeoutCallback, timeoutValue);
